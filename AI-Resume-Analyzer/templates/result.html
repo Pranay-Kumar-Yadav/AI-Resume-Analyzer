@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f3ed">
+  <title>Your match report | Resume Fit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="{{ url_for('index') }}"><span class="brand-mark" aria-hidden="true">R</span> RESUME FIT</a>
+    <a class="back-link" href="{{ url_for('index') }}">← New analysis</a>
+  </header>
+
+  <main class="results-shell">
+    <div class="results-title">
+      <div><p class="eyebrow"><span>02</span> / MATCH ANALYSIS</p><h1>Your fit, <span>in focus.</span></h1></div>
+      <p class="file-name"><span class="status-dot"></span>{{ results.filename }}</p>
+    </div>
+
+    <section class="score-band" aria-label="Match score">
+      <div class="score-number">{{ results.score }}<span>%</span></div>
+      <div class="score-copy"><p class="eyebrow">SKILL OVERLAP</p>
+        {% if results.has_job_skills %}
+          <h2>{% if results.score >= 75 %}Strong alignment{% elif results.score >= 45 %}Promising overlap{% else %}Room to strengthen{% endif %}</h2>
+          <p>{{ results.matched_skills|length }} of {{ results.job_skills|length }} detected job skills also appear in your resume.</p>
+        {% else %}
+          <h2>Not enough skill signals</h2>
+          <p>We couldn't identify skills from the job description using the current skill library.</p>
+        {% endif %}
+      </div>
+      <div class="score-stamp"><span>YOUR</span><strong>REPORT</strong><span>01 / 01</span></div>
+    </section>
+
+    <div class="skill-columns">
+      <section class="skill-section">
+        <div class="section-heading"><div><p class="eyebrow">GOOD SIGNALS</p><h2>Skills you match</h2></div><span class="count-pill matched-count">{{ results.matched_skills|length }}</span></div>
+        {% if results.matched_skills %}<ul class="skill-list">{% for skill in results.matched_skills %}<li><span class="skill-check" aria-hidden="true">✓</span>{{ skill }}</li>{% endfor %}</ul>{% else %}<p class="empty-state">No overlapping skills detected yet.</p>{% endif %}
+      </section>
+      <section class="skill-section missing-section">
+        <div class="section-heading"><div><p class="eyebrow">NEXT TO HIGHLIGHT</p><h2>Skills to address</h2></div><span class="count-pill missing-count">{{ results.missing_skills|length }}</span></div>
+        {% if results.missing_skills %}<ul class="skill-list">{% for skill in results.missing_skills %}<li><span class="skill-plus" aria-hidden="true">+</span>{{ skill }}</li>{% endfor %}</ul>{% else %}<p class="empty-state">No missing skills detected from this description.</p>{% endif %}
+      </section>
+    </div>
+
+    <section class="resume-skills">
+      <div><p class="eyebrow">RESUME INVENTORY</p><h2>Detected skills</h2></div>
+      {% if results.resume_skills %}<div class="tag-list">{% for skill in results.resume_skills %}<span class="skill-tag">{{ skill }}</span>{% endfor %}</div>{% else %}<p class="empty-state">No skills from the current library were detected in this resume.</p>{% endif %}
+    </section>
+
+    <p class="disclaimer">This score reflects detected skill overlap only. It is not an ATS score or a measure of your qualifications.</p>
+    <div class="results-actions"><a class="analyze-button" href="{{ url_for('index') }}">Analyze another <span aria-hidden="true">↗</span></a></div>
+  </main>
+  <footer class="site-footer"><span>RESUME FIT / CAREER TOOLKIT</span><span>BUILT FOR YOUR NEXT CHAPTER</span></footer>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f3ed">
+  <title>Resume Fit | Analyze a resume</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="{{ url_for('index') }}"><span class="brand-mark" aria-hidden="true">R</span> RESUME FIT</a>
+    <span class="topbar-note">CAREER TOOLS <span class="status-dot"></span> READY</span>
+  </header>
+
+  <main class="page-shell">
+    <section class="intro" aria-labelledby="page-title">
+      <p class="eyebrow"><span>01</span> / MATCH ANALYSIS</p>
+      <h1 id="page-title">Make your next<br><span>move count.</span></h1>
+      <p class="intro-copy">See how your experience lines up with the role. Get a clear read on the skills you already bring and the ones to highlight.</p>
+      <div class="method-note"><span class="note-icon" aria-hidden="true">↗</span><span>Private by design. Your resume is analyzed locally and removed after review.</span></div>
+    </section>
+
+    <section class="form-panel" aria-label="Resume and job description">
+      <div class="panel-heading">
+        <div><p class="eyebrow">YOUR MATERIALS</p><h2>Build your match report</h2></div>
+        <span class="step-count">01 <i>/</i> 02</span>
+      </div>
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="flash-list" role="alert">
+            {% for category, message in messages %}<p class="flash {{ category }}">{{ message }}</p>{% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+      <form action="{{ url_for('index') }}" method="post" enctype="multipart/form-data">
+        <label class="field-label" for="resume">01 <span>Upload your resume</span></label>
+        <label class="upload-zone" for="resume">
+          <span class="upload-icon" aria-hidden="true">↑</span>
+          <span class="upload-copy"><strong>Choose a file <span>or drop it here</span></strong><small>PDF, DOCX, or TXT · Up to 8 MB</small></span>
+          <span class="file-indicator" aria-hidden="true">+</span>
+        </label>
+        <input class="visually-hidden" id="resume" name="resume" type="file" accept=".pdf,.docx,.txt,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain" required>
+
+        <label class="field-label job-label" for="job_description">02 <span>Paste the job description</span></label>
+        <textarea id="job_description" name="job_description" rows="8" placeholder="Include the role requirements, responsibilities, and skills..." required>{{ request.form.get('job_description', '') }}</textarea>
+        <div class="form-footer"><span>We look for skill overlap, not a perfect keyword score.</span><button class="analyze-button" type="submit">Analyze fit <span aria-hidden="true">↗</span></button></div>
+      </form>
+    </section>
+  </main>
+
+  <footer class="site-footer"><span>RESUME FIT / CAREER TOOLKIT</span><span>BUILT FOR YOUR NEXT CHAPTER</span></footer>
+  <script>
+    const resumeInput = document.querySelector('#resume');
+    const uploadCopy = document.querySelector('.upload-copy strong');
+    resumeInput.addEventListener('change', () => {
+      if (resumeInput.files.length) uploadCopy.textContent = resumeInput.files[0].name;
+    });
+  </script>
+</body>
+</html>
